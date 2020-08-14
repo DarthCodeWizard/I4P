@@ -6,14 +6,22 @@ using System.Threading.Tasks;
 
 namespace I4PEscpaeGame.places.BathRoom
 {
-    class Things
+    class ThingsBath
     {
+
+        public ThingsBath( string position ,string name, bool isMooveable, List<KeyValuePair<string, string>> functions)
+        {
+            IsMooveable = isMooveable;
+            Functions = functions;
+            Name = name;
+            Position = position;
+        }
+        public string Name { get; set; }
+
         public bool IsMooveable { get; set; }
 
-        public List <string> Functions { get; set; }
+        public List<KeyValuePair<string, string>>Functions { get; set; }
 
-        public int MyProperty { get; set; }
-
-        public int MyProperty { get; set; }
+        public string Position { get; set; }
     }
 }
