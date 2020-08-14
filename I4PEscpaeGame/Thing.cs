@@ -1,30 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace I4PEscpaeGame.places.Livingroom
+namespace I4PEscpaeGame
 {
-    class ThingsLiving
+    class Thing
     {
-        public ThingsLiving(string position, string name, bool isMooveable, List<KeyValuePair<string, string>> functions)
+
+        public Thing( string position ,string name, bool isMooveable, List<KeyValuePair<string, string>> functions)
         {
             IsMooveable = isMooveable;
             Functions = functions;
             Name = name;
             Position = position;
         }
-
-       
         public string Name { get; set; }
 
         public bool IsMooveable { get; set; }
 
-        public List<KeyValuePair<string, string>> Functions { get; set; }
+        public List<KeyValuePair<string, string>>Functions { get; set; }
 
         public string Position { get; set; }
-
     }
 }
