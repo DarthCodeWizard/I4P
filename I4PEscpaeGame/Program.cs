@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Linq;
@@ -14,13 +15,13 @@ namespace I4PEscpaeGame
     class Program
     {
         public static List<string> Invertory = new List<string>();
-        public static UserInteractions interactions = new UserInteractions(response: "", command: "", item1: "", item2: "", room: "", Invertory);
        
         
         static void Main(string[] args)
         {
-           
-         
+           UserInteractions interactions = new UserInteractions(response: "", command: "", item1: "", item2: "", room: "nappali", Invertory);
+
+   
             string[] parancsok = { "menj", "nézd", "veddfel", "teddle", "nyisd", "húzd", "törd" };
             string read = "";
             Console.WriteLine("Üdvözöllek a szabaduló szoba játékban!");
@@ -39,6 +40,7 @@ namespace I4PEscpaeGame
             Console.WriteLine("vedd fel / tedd le. =>  helyesen teddle, veddfel. ");
             Console.WriteLine("A tovább lépéshez nyomj egy entert!");
             Console.ReadLine();
+            Console.Clear();
 
             while (interactions.Response != "Kijutottál!")
             {
@@ -59,20 +61,21 @@ namespace I4PEscpaeGame
                 {
                     Console.WriteLine("Adj meg egy parancsot!");
                 }
-              
 
-              
-                while (interactions.Room=="fürdő")
-                {
-                    interactions.Response = Bath(interactions);
-                }
 
-                while (interactions.Room == "nappali")
+                switch (interactions.Room)
                 {
-                    interactions.Response = Living(interactions);
+                    case "fürdő":
+                        interactions.Response = Bath(interactions);
+                        break;
+                    default:
+                        interactions.Response = Living(interactions);
+                        break;
                 }
-               
-                Console.WriteLine(interactions.Response);
+                
+                    Console.WriteLine(interactions.Response);
+                
+
             }
             Console.WriteLine("A játék végetért!");
         }
@@ -80,7 +83,7 @@ namespace I4PEscpaeGame
         private static string Living(UserInteractions interactions)
         {
 
-            string response = "";
+            string temp="";
             List<Thing> LivingRoomThings = new List<Thing>();
       
 
@@ -95,10 +98,32 @@ namespace I4PEscpaeGame
             szekrényFunctions.Add(new KeyValuePair<string, string>("nézd", "Ez egy szekrény ami be van csukva."));
             szekrényFunctions.Add(new KeyValuePair<string, string>("nyisd", "kinyitottad a szekrényt amiben egy doboz található."));
             szekrényFunctions.Add(new KeyValuePair<string, string>("húzd", "elúztad a szekrényt és mögötte egy ablakot látsz."));
+
+
+            List<KeyValuePair<string, string>> dobozFunctions = new List<KeyValuePair<string, string>>();
+            dobozFunctions.Add(new KeyValuePair<string, string>("veddfel", "felvetted a dobozt"));
+            dobozFunctions.Add(new KeyValuePair<string, string>("nyisd", "kinyitottad a dobozt és egy kulcs található benne"));
+            dobozFunctions.Add(new KeyValuePair<string, string>("teddle", "le tetted a dobozt"));
+            dobozFunctions.Add(new KeyValuePair<string, string>("nézd", "ez egy csukott doboz"));
+
+
+            List<KeyValuePair<string, string>> kulcsFunctions = new List<KeyValuePair<string, string>>();
+            kulcsFunctions.Add(new KeyValuePair<string, string>("veddfel", "Felvetted a dobozt."));
+            kulcsFunctions.Add(new KeyValuePair<string, string>("teddle", "Le tetted a dobozt."));
+            kulcsFunctions.Add(new KeyValuePair<string, string>("nézd", "Ez egy kulcs valószínüleg egy ajtóhoz való."));
+
+            List<KeyValuePair<string, string>> ajtoFunctions = new List<KeyValuePair<string, string>>();
+            ajtoFunctions.Add(new KeyValuePair<string, string>("nyisd", "az ajtó kinyilt nyugatra a fürdőszoba van előtted"));
             
+
+
+
             LivingRoomThings.Add(new Thing(position: "kelet", name: "ágy", isMooveable: false, ágyFunctions, isOpenable: false, isOpen: false));
             LivingRoomThings.Add(new Thing(position: "észak", name: "szekrény", isMooveable: false, szekrényFunctions, isOpenable: true, isOpen:false));
-
+            LivingRoomThings.Add(new Thing(position: "nyugat", name: "ajtó", isMooveable: false, ajtoFunctions , isOpenable: true, isOpen: false));
+            LivingRoomThings.Add(new Thing(position: "doboz", name: "kulcs", isMooveable: true, kulcsFunctions, isOpenable: false, isOpen: false));
+            LivingRoomThings.Add(new Thing(position: "szekrény", name: "doboz", isMooveable: true, dobozFunctions, isOpenable: true, isOpen: false));
+            
             switch (interactions.Command)
             {
                 case "menj":
@@ -119,6 +144,7 @@ namespace I4PEscpaeGame
                             if (ajtó.IsOpen)
                             {
                                 interactions.Response = "A fürdőben vagy.";
+                                interactions.Room = "fürdő";
                             }
                             else
                             {
@@ -128,44 +154,61 @@ namespace I4PEscpaeGame
                             break;
                     }
                     break;
-                case "nézd":
-                    response = "A szobában keletre egy kádat látok, a kádon kívül nincs semmi ebben a helységben. ";
-                    break;
+             
                 default:
 
                     foreach (var thing in LivingRoomThings)
                     {
-                        if (thing.Name == interactions.Item1)
+                        if (interactions.Item1 == thing.Name)
                         {
                             foreach (var funct in thing.Functions)
                             {
+                                if (thing.IsOpenable && interactions.Command == "nyisd" && Invertory.Contains("kulcs") && interactions.Item1 == "ajtó" && interactions.Item2 == "kulcs")
+                                {
+                                    thing.IsOpen = true;
+                                    interactions.Response = funct.Value;
+                                }
+
+                                else if (thing.IsOpenable && interactions.Command == "nyisd" &&interactions.Command==funct.Key)
+                                {
+                                    thing.IsOpen = true;
+                                }
+
                                 if (interactions.Command == funct.Key)
                                 {
-                                    response = funct.Value;
+                                    temp=funct.Value.ToString();
+                                    interactions.Response = temp;
+                                    
 
-                                    if (thing.IsOpenable && interactions.Command=="nyisd" && Invertory.Contains("kulcs") && interactions.Item2 == "kulcs")
-                                    {
-                                        thing.IsOpen = true;
-                                    }
-                                    if (thing.IsMooveable && interactions.Command=="vedd fel")
+                                   
+                                    if (thing.IsMooveable && interactions.Command=="veddfel")
                                     {
                                         Invertory.Add(thing.Name);
                                     }
+                                    else if (thing.IsMooveable && interactions.Command == "teddle")
+                                    {
+                                        Invertory.Remove(thing.Name);
+                                   
+                                    }
+                                   
                                 }
-                                
+                             
+                            }
+                            if (temp=="")
+                            {
                                 switch (interactions.Command)
                                 {
                                     case "nyisd":
-                                        response = " A(z) " + interactions.Item1 + " tárgyat nem tudom kinyitni";
+                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgyat nem tudom kinyitni";
                                         break;
                                     case "törd":
-                                        response = " A(z) " + interactions.Item1 + " tárgygyal nem tudok törni";
+                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgygyal nem tudok törni";
                                         break;
                                     case "veddfel":
-                                        response = " A(z) " + interactions.Item1 + " tárgygyat nem látom";
+                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgygyat nem látom";
                                         break;
                                     case "húzd":
-                                        response = " A(z) " + interactions.Item1 + " tárgygyat nem tudom húzni";
+                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgygyat nem tudom húzni";
                                         break;
                                     default:
                                         break;
@@ -189,16 +232,16 @@ namespace I4PEscpaeGame
                                 switch (interactions.Command)
                                 {
                                     case "nyisd":
-                                        response = " A(z) " + interactions.Item2 + " tárgyat nem tudom kinyitni";
+                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgyat nem tudom kinyitni";
                                         break;
                                     case "törd":
-                                        response = " A(z) " + interactions.Item2 + " tárgygyal nem tudok törni";
+                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgygyal nem tudok törni";
                                         break;
                                     case "veddfel":
-                                        response = " A(z) " + interactions.Item2 + " tárgygyat nem látom";
+                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgygyat nem látom";
                                         break;
                                     case "húzd":
-                                        response = " A(z) " + interactions.Item2 + " tárgygyat nem tudom húzni";
+                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgygyat nem tudom húzni";
                                         break;
                                     default:
 
@@ -214,14 +257,17 @@ namespace I4PEscpaeGame
 
 
             }
-            interactions.Response = response;
+            if (interactions.Command=="nézd"&&interactions.Item1=="" && interactions.Item2=="")
+            {
+                interactions.Response = "A nappaliban vagy itt található egy szekrény. Nyugatra látsz egy ajtót. ";
+            }
             return interactions.Response;
         }
     
 
         private static string Bath(UserInteractions interactions)
         {
-            string response = "";
+            
             List<Thing> bathroomThings = new List<Thing>();
 
             List<KeyValuePair<string, string>> kádFunctions = new List<KeyValuePair<string, string>>();
@@ -244,23 +290,23 @@ namespace I4PEscpaeGame
                     switch (interactions.Item1)
                     {
                         case "észak":
-                            response = "Északnak nem tudsz menni, arra nincs kijárat.";
+                            interactions.Response = "Északnak nem tudsz menni, arra nincs kijárat.";
                             break;
 
                         case "dél":
-                            response = "Délnek nem tudsz menni, arra nincs kijárat.";
+                            interactions.Response = "Délnek nem tudsz menni, arra nincs kijárat.";
                             break;
                         case "kelet":
-                            response = "A nappaliban vagy.";
+                            interactions.Response = "A nappaliban vagy.";
                             break;
                         case "nyugat":
-                            response = "Délnek nem tudsz menni, arra nincs kijárat.";
+                            interactions.Response = "Délnek nem tudsz menni, arra nincs kijárat.";
                             break;
                     }
                     break;
 
                     case "nézd":
-                        response = "A szobában keletre egy kádat látok, a kádon kívül nincs semmi ebben a helységben. ";
+                    interactions.Response = "A szobában keletre egy kádat látok, a kádon kívül nincs semmi ebben a helységben. ";
                         break;
                 default:
                     
@@ -272,26 +318,26 @@ namespace I4PEscpaeGame
                                 {
                                     if (interactions.Command == funct.Key)
                                     {
-                                        response = funct.Value;
+                                    interactions.Response = funct.Value;
                                     }
                                     switch (interactions.Command)
                                     {
                                        
 
                                         case "nyisd":
-                                            response = " A(z) " + interactions.Item1 + " tárgyat nem tudom kinyitni.";
+                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgyat nem tudom kinyitni.";
                                             break;
 
                                         case "törd":
-                                            response = " A(z) " + interactions.Item1 + " tárgygyal nem tudok törni.";
+                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgygyal nem tudok törni.";
                                             break;
 
                                         case "veddfel":
-                                            response = " A(z) " + interactions.Item1 + " tárgygyat nem látom.";
+                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgygyat nem látom.";
                                             break;
 
                                         case "húzd":
-                                            response = " A(z) " + interactions.Item1 + " tárgygyat nem tudom húzni.";
+                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgygyat nem tudom húzni.";
                                             break;
 
                                         default:
@@ -306,21 +352,21 @@ namespace I4PEscpaeGame
                                 {
                                     if (interactions.Command == funct.Key)
                                     {
-                                        response = funct.Value;
+                                    interactions.Response = funct.Value;
                                     }
                                 switch (interactions.Command)
                                 {
                                     case "nyisd":
-                                        response = " A(z) " + interactions.Item2 + " tárgyat nem tudom kinyitni";
+                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgyat nem tudom kinyitni";
                                         break;
                                     case "törd":
-                                        response = " A(z) " + interactions.Item2 + " tárgygyal nem tudok törni";
+                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgygyal nem tudok törni";
                                         break;
                                     case "veddfel":
-                                        response = " A(z) " + interactions.Item2 + " tárgygyat nem látom";
+                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgygyat nem látom";
                                         break;
                                     case "húzd":
-                                        response = " A(z) " + interactions.Item2 + " tárgygyat nem tudom húzni";
+                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgygyat nem tudom húzni";
                                         break;
                                     default:
                                      
@@ -336,7 +382,7 @@ namespace I4PEscpaeGame
 
 
             }
-            interactions.Response = response;
+           
             return interactions.Response;
         }
     }
