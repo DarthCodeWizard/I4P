@@ -38,11 +38,11 @@ namespace I4PEscpaeGame
             ajtoFunctions.Add(new KeyValuePair<string, string>("nyisd", "az ajtó kinyilt nyugatra a fürdőszoba van előtted"));
 
 
-            LivingRoomThings.Add(new Thing(position: "kelet", name: "ágy", isMooveable: false, ágyFunctions, isOpenable: false, isOpen: false));
-            LivingRoomThings.Add(new Thing(position: "észak", name: "szekrény", isMooveable: false, szekrényFunctions, isOpenable: true, isOpen: false));
-            LivingRoomThings.Add(new Thing(position: "nyugat", name: "ajtó", isMooveable: false, ajtoFunctions, isOpenable: true, isOpen: false));
-            LivingRoomThings.Add(new Thing(position: "doboz", name: "kulcs", isMooveable: true, kulcsFunctions, isOpenable: false, isOpen: false));
-            LivingRoomThings.Add(new Thing(position: "szekrény", name: "doboz", isMooveable: true, dobozFunctions, isOpenable: true, isOpen: false));
+            LivingRoomThings.Add(new Thing(breakable:false,isInSomething: false, container:"nappali", name: "ágy", isMooveable: false, ágyFunctions, isOpenable: false, isOpen: false));
+            LivingRoomThings.Add(new Thing(breakable:false,isInSomething: false, container:"nappali",name: "szekrény", isMooveable: false, szekrényFunctions, isOpenable: true, isOpen: false));
+            LivingRoomThings.Add(new Thing(breakable:false,isInSomething: false, container:"nappali",name: "ajtó", isMooveable: false, ajtoFunctions, isOpenable: true, isOpen: false));
+            LivingRoomThings.Add(new Thing(breakable:false,isInSomething: true , container: "doboz", name: "kulcs", isMooveable: true, kulcsFunctions, isOpenable: false, isOpen: false));
+            LivingRoomThings.Add(new Thing(breakable:false,isInSomething: true, container: "szekrény", name: "doboz", isMooveable: true, dobozFunctions, isOpenable: true, isOpen: false));
         }
         public static string LivingOnGame(UserInteractions interactions, List<string> Invertory)
         {
@@ -52,136 +52,162 @@ namespace I4PEscpaeGame
 
             switch (interactions.Command)
             {
+                case "nézd":
+                    switch (interactions.Item1)
+                    {
+                        case"":
+                            interactions.Response = "A nappaliban vagy. Itt található egy szekrény. Nyugatra látsz egy ajtót.";
+                            break;
+                        default:
+                            foreach (var thing in LivingRoomThings)
+                            {
+                                if (interactions.Item1 == thing.Name)
+                                {
+                                    foreach (var func in thing.Functions)
+                                    {
+                                        if (interactions.Command == func.Key)
+                                        {
+
+                                            if (thing.IsInSomething)
+                                            {
+                                                foreach (var thing1 in LivingRoomThings)
+                                                {
+                                                    if (thing1.Name == thing.Container && thing1.IsOpen)
+                                                    {
+                                                        interactions.Response = func.Value;
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                interactions.Response = func.Value;
+                                            }
+                                        }
+
+                                    }
+                                }
+                                
+                            }
+                            if (interactions.Response=="")
+                            {
+                                interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem látom";
+                            }
+                            break;
+                    }
+                    break;
+
+
                 case "menj":
                     switch (interactions.Item1)
                     {
-                        case "észak":
-
+                        case"észak":
                             break;
-
                         case "dél":
-
                             break;
                         case "kelet":
-
                             break;
                         case "nyugat":
-                            var ajtó = (from x in LivingRoomThings where (x.Name == "ajtó") select (x)).FirstOrDefault();
-                            if (ajtó.IsOpen)
-                            {
-                                interactions.Response = "A fürdőben vagy.";
-                                interactions.Room = "fürdő";
-                            }
-                            else
-                            {
-                                interactions.Response = "Itt egy ajtó van amin nem tudsz átmenni mert zárva van.";
-                            }
-
+                            break;
+                        default:
                             break;
                     }
+
                     break;
 
-                default:
-                    //át kell dolgozni a position propretyvel
+
+                case "nyisd":
                     foreach (var thing in LivingRoomThings)
                     {
-                        if (interactions.Item1 == thing.Name)
+                        foreach (var func in thing.Functions)
                         {
-                            foreach (var funct in thing.Functions)
+                            if (thing.Name == interactions.Item1 && interactions.Command == func.Key && thing.IsOpenable == true)
                             {
-                                if (thing.IsOpenable && interactions.Command == "nyisd" && Invertory.Contains("kulcs") && interactions.Item1 == "ajtó" && interactions.Item2 == "kulcs")
-                                {
-                                    thing.IsOpen = true;
-                                    interactions.Response = funct.Value;
-                                }
-
-                                else if (thing.IsOpenable && interactions.Command == "nyisd" && interactions.Command == funct.Key)
-                                {
-                                    thing.IsOpen = true;
-                                }
-
-                                if (interactions.Command == funct.Key)
-                                {
-                                    temp = funct.Value.ToString();
-                                    interactions.Response = temp;
-
-
-
-                                    if (thing.IsMooveable && interactions.Command == "veddfel")
-                                    {
-                                        Invertory.Add(thing.Name);
-                                    }
-                                    else if (thing.IsMooveable && interactions.Command == "teddle")
-                                    {
-                                        Invertory.Remove(thing.Name);
-
-                                    }
-
-                                }
-
+                                interactions.Response = func.Value;
+                                thing.IsOpen = true;
                             }
-                            if (temp == "")
-                            {
-                                switch (interactions.Command)
-                                {
-                                    case "nyisd":
-                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgyat nem tudom kinyitni";
-                                        break;
-                                    case "törd":
-                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgygyal nem tudok törni";
-                                        break;
-                                    case "veddfel":
-                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgygyat nem látom";
-                                        break;
-                                    case "húzd":
-                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgygyat nem tudom húzni";
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
+                           
                         }
-                        else if (thing.Name == interactions.Item2)
-                        {
-
-                            foreach (var funct in thing.Functions)
-                            {
-                                if (interactions.Command == funct.Key)
-                                {
-                                    switch (funct.Key)
-                                    {
-
-                                        default:
-                                            break;
-                                    }
-                                }
-                                switch (interactions.Command)
-                                {
-                                    case "nyisd":
-                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgyat nem tudom kinyitni";
-                                        break;
-                                    case "törd":
-                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgygyal nem tudok törni";
-                                        break;
-                                    case "veddfel":
-                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgygyat nem látom";
-                                        break;
-                                    case "húzd":
-                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgygyat nem tudom húzni";
-                                        break;
-                                    default:
-
-                                        break;
-                                }
-
-                            }
-                        }
-
+                    }
+                    if (interactions.Response == "")
+                    {
+                        interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem tudom kinyitni";
                     }
                     break;
 
 
+                case"veddfel":
+                    foreach (var thing in LivingRoomThings)
+                    {
+                        foreach (var func in thing.Functions)
+                        {
+                            if (thing.Name == interactions.Item1 && interactions.Command == func.Key && thing.IsMooveable)
+                            {
+                                interactions.Response = func.Value;
+                                Invertory.Add(thing.Name);
+                            }
 
+
+                            
+                        }
+                    }
+                    if (interactions.Response == "")
+                    {
+                        interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem tudom felvenni";
+                    }
+                    break;
+
+
+                case"teddle":
+                    foreach (var thing in LivingRoomThings)
+                    {
+                        foreach (var func in thing.Functions)
+                        {
+                            if (thing.Name == interactions.Item1 && interactions.Command == func.Key && Invertory.Contains(thing.Name))
+                            {
+                                interactions.Response = func.Value;
+                                Invertory.Remove(thing.Name);
+                            }
+
+
+
+                        }
+                    }
+                    if (interactions.Response == "")
+                    {
+                        interactions.Response = "a(z) " + interactions.Item1 + " tárgya nincs a birtokodban";
+                    }
+                    break;
+
+
+                case "húzd":
+                    foreach (var thing in LivingRoomThings)
+                    {
+                        foreach (var func in thing.Functions)
+                        {
+                            if (thing.Name == interactions.Item1 && interactions.Command == func.Key && thing.IsMooveable)
+                            {
+                                interactions.Response = func.Value;
+                            }
+
+
+                           
+                        }
+                    }
+                    if (interactions.Response == "")
+                    {
+                        interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem tudom elhúzni.";
+                    }
+                    break;
+
+
+                case"törd":
+
+                    break;
+
+
+
+                default:
+                    break;
             }
             if (interactions.Command == "nézd" && interactions.Item1 == "" && interactions.Item2 == "")
             {

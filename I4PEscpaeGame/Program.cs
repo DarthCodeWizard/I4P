@@ -74,7 +74,11 @@ namespace I4PEscpaeGame
                 }
 
                 Console.WriteLine(interactions.Response);
-
+                interactions.Response = "";
+                interactions.Command = "";
+                interactions.Item1 = "";
+                interactions.Item2 = "";
+             
 
             }
             Console.WriteLine("A játék végetért!");

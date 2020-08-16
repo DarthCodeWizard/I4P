@@ -9,12 +9,14 @@ namespace I4PEscpaeGame
     class Thing
     {
 
-        public Thing( string position ,string name, bool isMooveable, List<KeyValuePair<string, string>> functions, bool isOpenable, bool isOpen)
+        public Thing( bool breakable,bool isInSomething ,string container, string name, bool isMooveable, List<KeyValuePair<string, string>> functions, bool isOpenable, bool isOpen)
         {
             IsMooveable = isMooveable;
             Functions = functions;
             Name = name;
-            Position = position;
+            Container = container;
+            Breakable = breakable;
+            IsInSomething = isInSomething;
             IsOpen = isOpen;
             IsOpenable = isOpenable;
         }
@@ -24,10 +26,12 @@ namespace I4PEscpaeGame
 
         public List<KeyValuePair<string, string>>Functions { get; set; }
 
-        public string Position { get; set; }
-
         public bool IsOpenable { get; set; }
 
         public  bool IsOpen { get; set; }
+        public bool IsInSomething { get; set; }
+        public  string Container { get; set; }
+
+        public bool Breakable { get; set; }
     }
 }

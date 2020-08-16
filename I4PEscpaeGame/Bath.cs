@@ -22,8 +22,8 @@ namespace I4PEscpaeGame
             feszítovasFunctions.Add(new KeyValuePair<string, string>("törd", "betörted a(z)"));
 
 
-            bathroomThings.Add(new Thing(position: "kelet", name: "kád", isMooveable: false, kádFunctions, isOpenable: false, isOpen: false));
-            bathroomThings.Add(new Thing(position: "kád", name: "feszítő vas", isMooveable: false, feszítovasFunctions, isOpenable: false, isOpen: false));
+            bathroomThings.Add(new Thing(breakable:false,isInSomething:false, container:"fürdő", name: "kád", isMooveable: false, kádFunctions, isOpenable: false, isOpen: false));
+            bathroomThings.Add(new Thing(breakable:false,isInSomething:true, container:"kád", name: "feszítő vas", isMooveable: false, feszítovasFunctions, isOpenable: false, isOpen: false));
         }
         public static string BathOnGame(UserInteractions interactions, List<string> Invertory)
         {
@@ -56,7 +56,7 @@ namespace I4PEscpaeGame
                     interactions.Response = "A szobában keletre egy kádat látok, a kádon kívül nincs semmi ebben a helységben. ";
                     break;
                 default:
-                    //átdolgozni a position propertyvel
+                    //átdolgozni go to-val
                     foreach (var thing in BathroomThings)
                     {
                         if (thing.Name == interactions.Item1)
