@@ -8,7 +8,7 @@ namespace I4PEscpaeGame
 {
     class Bath
     {
-        private static void Init(List<Thing> bathroomThings)
+        public static void Init(List<Thing> bathroomThings)
         {
          
             List<KeyValuePair<string, string>> kádFunctions = new List<KeyValuePair<string, string>>();
@@ -22,116 +22,205 @@ namespace I4PEscpaeGame
             feszítovasFunctions.Add(new KeyValuePair<string, string>("törd", "betörted a(z)"));
 
 
-            bathroomThings.Add(new Thing(breakable:false,isInSomething:false, container:"fürdő", name: "kád", isMooveable: false, kádFunctions, isOpenable: false, isOpen: false));
-            bathroomThings.Add(new Thing(breakable:false,isInSomething:true, container:"kád", name: "feszítő vas", isMooveable: false, feszítovasFunctions, isOpenable: false, isOpen: false));
+            bathroomThings.Add(new Thing(breakable:false,isInSomething:false, container:"fürdő", name: "kád", isMooveable: false, kádFunctions, isOpenable: false,isOpen:false, isChecked:false, isPullable: false));
+            bathroomThings.Add(new Thing(breakable: false, isInSomething: true, container: "kád", name: "feszítővas", isMooveable: false, feszítovasFunctions, isOpenable: false, isOpen: true, isChecked: false, isPullable: false));
         }
-        public static string BathOnGame(UserInteractions interactions, List<string> Invertory)
+        public static string BathOnGame(UserInteractions interactions, List<string> Invertory,List<Thing> BathroomThings)
         {
-            string temp = "";
-            List<Thing> BathroomThings = new List<Thing>();
-            Init(BathroomThings);
+            
+            
+          
+
 
             switch (interactions.Command)
             {
+                case "nézd":
+                    switch (interactions.Item1)
+                    {
+                        case "":
+                            interactions.Response = "A fürdőben vagy. Délre található egy ajtó amin átjöttél a nappaliból, valamint Keletre látsz magad mellett egy kádat.";
+                            break;
+                        default:
+                            foreach (var thing in BathroomThings)
+                            {
+                                if (interactions.Item1 == thing.Name)
+                                {
+                                    foreach (var func in thing.Functions)
+                                    {
+                                        if (interactions.Command == func.Key)
+                                        {
+
+                                            if (thing.IsInSomething)
+                                            {
+                                                foreach (var Container in BathroomThings)
+                                                {
+                                                    if (Container.Name == thing.Container && Container.IsChecked == true)
+                                                    {
+                                                        interactions.Response = func.Value;
+                                                        thing.IsChecked = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                interactions.Response = func.Value;
+                                                thing.IsChecked = true;
+                                            }
+                                        }
+
+                                    }
+                                }
+
+                            }
+                            if (interactions.Response == "")
+                            {
+                                interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem látom";
+                            }
+                            break;
+                    }
+                    break;
+
+
                 case "menj":
                     switch (interactions.Item1)
                     {
                         case "észak":
-                            interactions.Response = "Északnak nem tudsz menni, arra nincs kijárat.";
+                            interactions.Response = "Északra nem tudsz menni, arra nincs kijárat.";
                             break;
-
                         case "dél":
-                            interactions.Response = "Délnek nem tudsz menni, arra nincs kijárat.";
+                            interactions.Response = "A nappaliban vagy";
+                            interactions.Room = "nappali";
                             break;
                         case "kelet":
-                            interactions.Response = "A nappaliban vagy.";
+                            interactions.Response = "Eöltted van egy Kád.";
                             break;
                         case "nyugat":
-                            interactions.Response = "Délnek nem tudsz menni, arra nincs kijárat.";
+                            interactions.Response = "Nyugatnak nem tudsz menni, arra nincs kijárat.";
+                            break;
+                        default:
                             break;
                     }
+
                     break;
 
-                case "nézd":
-                    interactions.Response = "A szobában keletre egy kádat látok, a kádon kívül nincs semmi ebben a helységben. ";
-                    break;
-                default:
-                    //átdolgozni go to-val
+
+                case "nyisd":
                     foreach (var thing in BathroomThings)
                     {
-                        if (thing.Name == interactions.Item1)
+                        foreach (var func in thing.Functions)
                         {
-                            foreach (var funct in thing.Functions)
+                            if (thing.Name == interactions.Item1 && interactions.Command == func.Key && thing.IsOpenable == true && (interactions.Item1 != "ajtó" || interactions.Item2 != "ajtó"))
                             {
-                                if (interactions.Command == funct.Key)
-                                {
-                                    interactions.Response = funct.Value;
-                                }
-                                switch (interactions.Command)
-                                {
-
-
-                                    case "nyisd":
-                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgyat nem tudom kinyitni.";
-                                        break;
-
-                                    case "törd":
-                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgygyal nem tudok törni.";
-                                        break;
-
-                                    case "veddfel":
-                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgygyat nem látom.";
-                                        break;
-
-                                    case "húzd":
-                                        interactions.Response = " A(z) " + interactions.Item1 + " tárgygyat nem tudom húzni.";
-                                        break;
-
-                                    default:
-                                        break;
-                                }
+                                thing.IsOpen = true;
+                                interactions.Response = func.Value;
+                                break;
                             }
+
                         }
-                        else if (thing.Name == interactions.Item2)
+                    }
+                    if (interactions.Response == "")
+                    {
+                        if (interactions.Item1 == "ajtó" && interactions.Item2 == "kulcs" && Invertory.Contains("kulcs") || interactions.Item1 == "kulcs" && interactions.Item2 == "ajtó" && Invertory.Contains("kulcs"))
                         {
 
-                            foreach (var funct in thing.Functions)
-                            {
-                                if (interactions.Command == funct.Key)
-                                {
-                                    interactions.Response = funct.Value;
-                                }
-                                switch (interactions.Command)
-                                {
-                                    case "nyisd":
-                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgyat nem tudom kinyitni";
-                                        break;
-                                    case "törd":
-                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgygyal nem tudok törni";
-                                        break;
-                                    case "veddfel":
-                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgygyat nem látom";
-                                        break;
-                                    case "húzd":
-                                        interactions.Response = " A(z) " + interactions.Item2 + " tárgygyat nem tudom húzni";
-                                        break;
-                                    default:
-
-                                        break;
-                                }
-
-                            }
+                            interactions.Response = "Az ajtó nyitva van";
+                        }
+                        else
+                        {
+                            interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem tudom kinyitni";
                         }
 
                     }
                     break;
 
 
+                case "veddfel":
 
+                    foreach (var thing in BathroomThings)
+                    {
+                        foreach (var func in thing.Functions)
+                        {
+                            if (interactions.Command == func.Key)
+                            {
+
+                                if (thing.IsInSomething)
+                                {
+                                    foreach (var Container in BathroomThings)
+                                    {
+                                        if (Container.Name == thing.Container && Container.IsChecked == true)
+                                        {
+                                            interactions.Response = func.Value;
+                                            Invertory.Add(thing.Name.ToString());
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (interactions.Response == "")
+                    {
+                        interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem tudom felvenni";
+                    }
+                    break;
+
+
+                case "teddle":
+                    foreach (var thing in BathroomThings)
+                    {
+                        foreach (var func in thing.Functions)
+                        {
+                            if (thing.Name == interactions.Item1 && interactions.Command == func.Key && Invertory.Contains(thing.Name))
+                            {
+                                interactions.Response = func.Value;
+                                Invertory.Remove(thing.Name);
+                                break;
+                            }
+                        }
+                    }
+                    if (interactions.Response == "")
+                    {
+                        interactions.Response = "a(z) " + interactions.Item1 + " tárgya nincs a birtokodban";
+                    }
+                    break;
+
+
+                case "húzd":
+                    foreach (var thing in BathroomThings)
+                    {
+                        foreach (var func in thing.Functions)
+                        {
+                            if (thing.Name == interactions.Item1 && interactions.Command == func.Key && thing.IsMooveable)
+                            {
+                                interactions.Response = func.Value;
+                            }
+                        }
+                    }
+                    if (interactions.Response == "")
+                    {
+                        interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem tudom elhúzni.";
+                    }
+                    break;
+
+
+                case "törd":
+
+                    break;
+
+
+
+                default:
+
+
+                    interactions.Response = "Ismeretlen parancs, kérlek próbálkozz egy érvényes paranccsal!";
+
+
+                    break;
             }
 
             return interactions.Response;
-        
+
         }
     }
 }

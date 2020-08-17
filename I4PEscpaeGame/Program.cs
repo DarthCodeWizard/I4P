@@ -14,13 +14,14 @@ namespace I4PEscpaeGame
 {
     class Program
     {
-        public static List<string> Invertory = new List<string>();
-
-
+        public static List<string>Invertory = new List<string>();
+        public static List<Thing> LivingRoomThings = new List<Thing>();
+        public static List<Thing> BathroomThings = new List<Thing>();
         static void Main(string[] args)
         {
             UserInteractions interactions = new UserInteractions(response: "", command: "", item1: "", item2: "", room: "nappali", Invertory);
-
+            Living.Init(LivingRoomThings);
+            Bath.Init(BathroomThings);
 
             string[] parancsok = { "menj", "nézd", "veddfel", "teddle", "nyisd", "húzd", "törd" };
             string read = "";
@@ -41,10 +42,10 @@ namespace I4PEscpaeGame
             Console.WriteLine("A tovább lépéshez nyomj egy entert!");
             Console.ReadLine();
             Console.Clear();
-
+            
             while (interactions.Response != "Kijutottál!")
             {
-                read = Console.ReadLine();
+                read = Console.ReadLine().ToLower();
                 if (read.Length > 1)
                 {
                     interactions.Command = read.Split(' ')[0];
@@ -66,10 +67,10 @@ namespace I4PEscpaeGame
                 switch (interactions.Room)
                 {
                     case "fürdő":
-                        interactions.Response = Bath.BathOnGame(interactions, Invertory);
+                        interactions.Response = Bath.BathOnGame(interactions, Invertory,BathroomThings);
                         break;
                     default:
-                        interactions.Response = Living.LivingOnGame(interactions, Invertory);
+                        interactions.Response = Living.LivingOnGame(interactions, Invertory, LivingRoomThings);
                         break;
                 }
 
