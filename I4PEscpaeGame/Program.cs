@@ -88,9 +88,23 @@ namespace I4PEscpaeGame
                     }
                     if (interactions.Command == "mentés")
                     {
-                        if (interactions.Item1 == "" && interactions.Item2 == "")
+                        if (interactions.Item1 != "" && interactions.Item2 == "")
                         {
                             SaveLoad.Save(Invertory,LivingRoomThings,BathroomThings,interactions);
+                        }
+                        else if (interactions.Response == "")
+                        {
+                            interactions.Response = "A mentés parancshoz nem kell megadj semmilyen paramétert";
+                        }
+                    }
+                    if (interactions.Command == "betöltés")
+                    {
+                        if (interactions.Item1 != "" && interactions.Item2 == "")
+                        {
+                            DataRetun RecivedData = SaveLoad.Load(LivingRoomThings, BathroomThings, Invertory,interactions);
+                            LivingRoomThings = RecivedData.Living;
+                            BathroomThings = RecivedData.Bath;
+                            Invertory = RecivedData.Inv;
                         }
                         else if (interactions.Response == "")
                         {

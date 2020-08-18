@@ -46,6 +46,7 @@
     <Compile Include="Bath.cs" />
     <Compile Include="DataRetun.cs" />
     <Compile Include="Living.cs" />
+    <Compile Include="LoadedData.cs" />
     <Compile Include="SaveLoad.cs" />
     <Compile Include="Thing.cs" />
     <Compile Include="Program.cs" />
