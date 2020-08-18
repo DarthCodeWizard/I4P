@@ -12,14 +12,14 @@ namespace I4PEscpaeGame
         {
          
             List<KeyValuePair<string, string>> kádFunctions = new List<KeyValuePair<string, string>>();
-            kádFunctions.Add(new KeyValuePair<string, string>("nézd", "a kádban egy feszítővas van"));
+            kádFunctions.Add(new KeyValuePair<string, string>("nézd", "A kádban egy feszítővas van."));
 
 
             List<KeyValuePair<string, string>> feszítovasFunctions = new List<KeyValuePair<string, string>>();
 
-            feszítovasFunctions.Add(new KeyValuePair<string, string>("nézd", "ez egy feszítő vas"));
-            feszítovasFunctions.Add(new KeyValuePair<string, string>("veddfel", "felvetted a feszítővasat"));
-            feszítovasFunctions.Add(new KeyValuePair<string, string>("törd", "betörted a(z)"));
+            feszítovasFunctions.Add(new KeyValuePair<string, string>("nézd", "Ez egy feszítő vas"));
+            feszítovasFunctions.Add(new KeyValuePair<string, string>("veddfel", "Felvetted a feszítővasat"));
+         
 
 
             bathroomThings.Add(new Thing(breakable:false,isInSomething:false, container:"fürdő", name: "kád", isMooveable: false, kádFunctions, isOpenable: false,isOpen:false, isChecked:false, isPullable: false));
@@ -205,17 +205,20 @@ namespace I4PEscpaeGame
 
 
                 case "törd":
-
-                    break;
+                    return interactions.Response = "Ez a parancs itt nem elérhető";
+                  
 
 
 
                 default:
-
-
-                    interactions.Response = "Ismeretlen parancs, kérlek próbálkozz egy érvényes paranccsal!";
-
-
+                    if (interactions.Command == "")
+                    {
+                        interactions.Response = "Kérlek adj meg egy parancsot!";
+                    }
+                    else if (interactions.Response == "")
+                    {
+                        interactions.Response = "Ismeretlen parancs, kérlek próbálkozz egy érvényes paranccsal!";
+                    }
                     break;
             }
 
