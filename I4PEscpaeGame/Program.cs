@@ -28,6 +28,7 @@ namespace I4PEscpaeGame
                
                 string[] parancsok = { "menj", "nézd", "veddfel", "teddle", "nyisd", "húzd", "törd" };
                 string read = "";
+               
                 Console.WriteLine("Üdvözöllek a szabaduló szoba játékban!");
                 Console.WriteLine();
                 Console.WriteLine("A helyszín egy lakás a cél hogy kijuss. ");
@@ -75,17 +76,19 @@ namespace I4PEscpaeGame
                                 {
                                     Console.WriteLine(item);
                                 }
+                                Console.WriteLine();
                             }
                             else
                             {
-                                Console.WriteLine("Nincs nálad semmi!");
+                                Console.WriteLine("Nincs nálad semmi.");
                             }
                         }
                         else if (interactions.Response == "")
                         {
-                            interactions.Response = "A leltár parancshoz nem kell megadj semmilyen paramétert";
+                            interactions.Response = "A leltár parancshoz nem kell megadj semmilyen paramétert.";
                         }
                     }
+
                     if (interactions.Command == "mentés")
                     {
                         if (interactions.Item1 != "" && interactions.Item2 == "")
@@ -94,24 +97,22 @@ namespace I4PEscpaeGame
                         }
                         else if (interactions.Response == "")
                         {
-                            interactions.Response = "A mentés parancshoz nem kell megadj semmilyen paramétert";
+                            interactions.Response = "A mentés parancshoz meg kell add a file nevét.";
                         }
                     }
+
                     if (interactions.Command == "betöltés")
                     {
                         if (interactions.Item1 != "" && interactions.Item2 == "")
                         {
-                            DataRetun RecivedData = SaveLoad.Load(LivingRoomThings, BathroomThings, Invertory,interactions);
-                            LivingRoomThings = RecivedData.Living;
-                            BathroomThings = RecivedData.Bath;
-                            Invertory = RecivedData.Inv;
+                            SaveLoad.Load(LivingRoomThings, BathroomThings, Invertory, interactions);
                         }
-                        else if (interactions.Response == "")
+                        else if (interactions.Response == "" && interactions.Item1=="")
                         {
-                            interactions.Response = "A mentés parancshoz nem kell megadj semmilyen paramétert";
+                            interactions.Response = "A betöltés parancshoz meg kell add a fájl nevét amit beszeretnél tölteni!";
                         }
                     }
-
+                   
                     if (!(interactions.Command=="leltár" || interactions.Command == "mentés" || interactions.Command == "betöltés"))
                     {
                         switch (interactions.Room)

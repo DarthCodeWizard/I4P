@@ -17,13 +17,13 @@ namespace I4PEscpaeGame
 
             List<KeyValuePair<string, string>> feszítovasFunctions = new List<KeyValuePair<string, string>>();
 
-            feszítovasFunctions.Add(new KeyValuePair<string, string>("nézd", "Ez egy feszítő vas"));
-            feszítovasFunctions.Add(new KeyValuePair<string, string>("veddfel", "Felvetted a feszítővasat"));
+            feszítovasFunctions.Add(new KeyValuePair<string, string>("nézd", "Ez egy feszítő vas."));
+            feszítovasFunctions.Add(new KeyValuePair<string, string>("veddfel", "Felvetted a feszítővasat."));
          
 
 
             bathroomThings.Add(new Thing(breakable:false,isInSomething:false, container:"fürdő", name: "kád", isMooveable: false, kádFunctions, isOpenable: false,isOpen:false, isChecked:false, isPullable: false));
-            bathroomThings.Add(new Thing(breakable: false, isInSomething: true, container: "kád", name: "feszítővas", isMooveable: false, feszítovasFunctions, isOpenable: false, isOpen: true, isChecked: false, isPullable: false));
+            bathroomThings.Add(new Thing(breakable: false, isInSomething: true, container: "kád", name: "feszítővas", isMooveable: false, feszítovasFunctions, isOpenable: false, isOpen: false, isChecked: false, isPullable: false));
         }
         public static string BathOnGame(UserInteractions interactions, List<string> Invertory,List<Thing> BathroomThings)
         {
@@ -75,7 +75,7 @@ namespace I4PEscpaeGame
                             }
                             if (interactions.Response == "")
                             {
-                                interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem látom";
+                                interactions.Response = "A(z) " + interactions.Item1 + " tárgyat nem látom.";
                             }
                             break;
                     }
@@ -128,7 +128,7 @@ namespace I4PEscpaeGame
                         }
                         else
                         {
-                            interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem tudom kinyitni";
+                            interactions.Response = "A(z) " + interactions.Item1 + " tárgyat nem tudom kinyitni.";
                         }
 
                     }

@@ -9,102 +9,146 @@ namespace I4PEscpaeGame
 {
     class SaveLoad
     {
-        public static void Save(List<string>Invertory,List<Thing>LivingRoomThings,List<Thing>BathroomThings,UserInteractions interactions)
+        public static void Save(List<string> Invertory, List<Thing> LivingRoomThings, List<Thing> BathroomThings, UserInteractions interactions)
         {
             string Filename = interactions.Item1;
-            using (StreamWriter writer=new StreamWriter(Filename))
+            try
             {
-                foreach (var thing in LivingRoomThings )
+                using (StreamWriter writer = new StreamWriter(Filename))
                 {
-                    writer.WriteLine(thing.Name + " " + thing.IsOpenable + " "+ thing.IsOpen+" "+thing.IsMooveable+" "+thing.IsInSomething+" "+thing.Breakable+" "+thing.IsChecked+" "+thing.IsPulleable+" nappali ");
-                    
+                    foreach (var thing in LivingRoomThings)
+                    {
+                        writer.WriteLine(thing.Name + " " + thing.IsOpen + " " + thing.IsChecked + " " + "nappali");
+
+                    }
+                    foreach (var thing in BathroomThings)
+                    {
+                        writer.WriteLine(thing.Name + " " + thing.IsOpen + " " + thing.IsChecked + " " + "Fürdő");
+                    }
+                    foreach (var item in Invertory)
+                    {
+                        writer.WriteLine("Invertory" + " " + item);
+                    }
                 }
-                foreach (var thing in BathroomThings)
-                {
-                    writer.WriteLine(thing.Name + " " + thing.IsOpenable + " " + thing.IsOpen + " " + thing.IsMooveable + " " + thing.IsInSomething + " " + thing.Breakable + " " + thing.IsChecked + " " + thing.IsPulleable + " fürdő ");
-                   
-                }
-                foreach (var item in Invertory)
-                {
-                    writer.WriteLine("Invertory:"+item);
-                }
+                interactions.Response = "Sikeres mentés";
             }
-            interactions.Response="Sikeres mentés";
+            
+            catch (Exception e)
+            {
+
+                interactions.Response=e.Message.ToString();
+            }
         }
-        public static DataRetun Load(List<Thing>LivingThings,List<Thing>BathThings,List<string>Invent, UserInteractions interactions)
+
+
+        public static void Load(List<Thing> LivingThings, List<Thing> BathThings, List<string> Invent, UserInteractions interactions)
         {
+
             List<LoadedData> LivingThingsL = new List<LoadedData>();
             List<LoadedData> BathThingsL = new List<LoadedData>();
             List<string> InvL = new List<string>();
+            // DataRetun Recive = new DataRetun(bath: BathThings, living: LivingThings, inv: Invent);
             string Filename = interactions.Item1;
-            if (File.Exists(Filename))
+            try
             {
-                string[] content = File.ReadAllLines(Filename);
-                char[] splitting = { ' ' };
+                if (File.Exists(Filename) == true)
+                {
+                    string[] content = File.ReadAllLines(Filename.ToString());
+                    char[] splitting = { ' ', ';' };
 
-                foreach (var sor in content)
-                {
-                    string[] temp = sor.Split(splitting);
-                    if (temp[8] == "nappali")
+                    foreach (var sor in content)
                     {
-                        LivingThingsL.Add(new LoadedData(temp[0], Convert.ToBoolean(temp[1]), Convert.ToBoolean(temp[2]), Convert.ToBoolean(temp[3]), Convert.ToBoolean(temp[4]), Convert.ToBoolean(temp[5]), Convert.ToBoolean(temp[6]), Convert.ToBoolean(temp[7])));
-                    }
-                    else if (temp[8] == "fürdő")
-                    {
-                        BathThingsL.Add(new LoadedData(temp[0], Convert.ToBoolean(temp[1]), Convert.ToBoolean(temp[2]), Convert.ToBoolean(temp[3]), Convert.ToBoolean(temp[4]), Convert.ToBoolean(temp[5]), Convert.ToBoolean(temp[6]), Convert.ToBoolean(temp[7])));
-                    }
-                    else
-                    {
-                        InvL.Add(temp[1]);
-                    }
-                }
-                foreach (var thing in LivingThings)
-                {
-                    foreach (var thingL in LivingThingsL)
-                    {
-                        if (thing.Name == thingL.Name)
+                        string[] temp = sor.Split(splitting);
+
+                        if (sor != null)
                         {
-                            thing.IsChecked = thingL.IsChecked;
-                            thing.IsInSomething = thingL.IsInSomething;
-                            thing.IsMooveable = thingL.IsMooveable;
-                            thing.IsOpen = thingL.IsOpen;
-                            thing.IsOpenable = thingL.IsOpenable;
-                            thing.IsPulleable = thingL.IsPulleable;
-                            thing.Breakable = thingL.IsBreakable;
+                            if (temp.Length == 4 && temp[3] == "nappali")
+                            {
+                                LivingThingsL.Add(new LoadedData(temp[0], bool.Parse(temp[1]), bool.Parse(temp[2])));
+                            }
+                            else if (temp.Length == 4 && temp[3] == "Fürdő")
+                            {
+                                BathThingsL.Add(new LoadedData(temp[0], bool.Parse(temp[1]), bool.Parse(temp[2])));
+                            
+                            }
+                            else if (temp.Length==2 && temp[0] == "Invertory")
+                            {
+                                InvL.Add(temp[1]);
 
+                            }
+                            
                         }
                     }
-                }
-                foreach (var thing in BathThings)
-                {
-                    foreach (var thingL in BathThingsL)
+                    if (!(LivingThingsL.Count == 0 || BathThingsL.Count == 0))
                     {
-                        if (thing.Name == thingL.Name)
+                        foreach (var thing in LivingThings)
                         {
-                            thing.IsChecked = thingL.IsChecked;
-                            thing.IsInSomething = thingL.IsInSomething;
-                            thing.IsMooveable = thingL.IsMooveable;
-                            thing.IsOpen = thingL.IsOpen;
-                            thing.IsOpenable = thingL.IsOpenable;
-                            thing.IsPulleable = thingL.IsPulleable;
-                            thing.Breakable = thingL.IsBreakable;
+                            foreach (var thingL in LivingThingsL)
+                            {
+                                if (thing.Name == thingL.Name)
+                                {
+                                    thing.IsChecked = thingL.IsChecked;
+                                    thing.IsOpen = thingL.IsOpen;
+                                }
+                            }
+                        }
+
+                        foreach (var thing in BathThings)
+                        {
+                            foreach (var thingL in BathThingsL)
+                            {
+                                if (thing.Name == thingL.Name)
+                                {
+                                    thing.IsChecked = thingL.IsChecked;
+                                    thing.IsOpen = thingL.IsOpen;
+
+                                }
+                            }
+                        }
+                        if (InvL.Count!=0)
+                        {
+                            for (int i = 0; i < InvL.Count; i++)
+                            {
+                                if (Invent.Count != 0)
+                                {
+                                    for (int j = 0; j < Invent.Count; j++)
+                                
+                                   
+                                        if (!Invent.Contains(InvL[i]))
+                                        {
+                                            Invent.Add(InvL[i]);
+                                        }
+                      
+                                        else if (!InvL.Contains(Invent[j]))
+                                        {
+                                            Invent.Remove(Invent[j]);
+                                        }
+                                }
+                                else
+                                {
+                                    Invent.Add(InvL[i]);
+                                }
+                                    
+                                
+                            }
 
                         }
+                            interactions.Response = "A(z)" + interactions.Item1 + "fájl betöltése sikeres volt.";
                     }
+
+                }
+                else if (!File.Exists(Filename))
+                {
+                    interactions.Response = "A megadott file nem létezik.";
+
                 }
 
-                Invent = InvL;
-
-                interactions.Response = "Betöltés Sikerült a" + interactions.Item1 + "fájlból";
             }
-            else if (!File.Exists(Filename))
+            catch (Exception ex)
             {
-                interactions.Response = "A megadott file nem létezik";
+                interactions.Response = ex.Message.ToString();
             }
             
-           
-            return new DataRetun { Bath = BathThings, Living = LivingThings, Inv = Invent };
-           
         }
        
     }
