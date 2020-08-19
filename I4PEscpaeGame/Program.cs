@@ -26,7 +26,7 @@ namespace I4PEscpaeGame
                 Living.Init(LivingRoomThings);
                 Bath.Init(BathroomThings);
                
-                string[] parancsok = { "menj", "nézd", "veddfel", "teddle", "nyisd", "húzd", "törd" };
+                string[] parancsok = { "menj", "nézd", "veddfel", "teddle", "nyisd", "húzd", "törd","leltár","mentés", "betöltés"};
                 string read = "";
                
                 Console.WriteLine("Üdvözöllek a szabaduló szoba játékban!");
@@ -43,6 +43,8 @@ namespace I4PEscpaeGame
                 Console.WriteLine("A menj parancs a észak, dél, kelet, nyugat használatával működik ");
                 Console.WriteLine("Fontos, hogy egy parancsnál minding tegyél szóközt a szavak közé ezalól csak az összetett szavak képeznek kivételt pl:");
                 Console.WriteLine("vedd fel / tedd le. =>  helyesen teddle, veddfel. ");
+                Console.WriteLine("Fontos hogy a parancsok megadásánál a mit mivel szepontot kövessd!");
+                Console.WriteLine("Pl: Az ajtót a kulccsal tudod kinyitni, és nem a kulcsot az ajtóval.");
                 Console.WriteLine("A tovább lépéshez nyomj egy ENTER-t!");
                 Console.ReadLine();
                 Console.Clear();
