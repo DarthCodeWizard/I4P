@@ -41,6 +41,8 @@ namespace I4PEscpaeGame
 
                 Console.WriteLine();
                 Console.WriteLine("A menj parancs a észak, dél, kelet, nyugat használatával működik ");
+                Console.WriteLine("A nézd parancs tárgy megadásával a tárgyról ad részletes leírást,");
+                Console.WriteLine("Önmagában viszont az adott helyszínről ahol tartózkodsz");
                 Console.WriteLine("Fontos, hogy egy parancsnál minding tegyél szóközt a szavak közé ezalól csak az összetett szavak képeznek kivételt pl:");
                 Console.WriteLine("vedd fel / tedd le. =>  helyesen teddle, veddfel. ");
                 Console.WriteLine("Fontos hogy a parancsok megadásánál a mit mivel szepontot kövessd!");
@@ -150,7 +152,7 @@ namespace I4PEscpaeGame
                 }
                 Console.WriteLine();
                 Console.WriteLine();
-                Console.WriteLine("Ki jutottál!");
+                Console.WriteLine("Kijutottál!");
                 Console.WriteLine("A játék végetért!");
                 Console.WriteLine("A kilépéshez nyom egy ENTER-t !");
                 Console.ReadLine();

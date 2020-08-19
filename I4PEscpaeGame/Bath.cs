@@ -38,7 +38,7 @@ namespace I4PEscpaeGame
                     switch (interactions.Item1)
                     {
                         case "":
-                            interactions.Response = "A fürdőben vagy. Délre található egy ajtó amin átjöttél a nappaliból, valamint Keletre látsz magad mellett egy kádat.";
+                            interactions.Response = "A fürdőben vagy. Délre található egy kád, valamint Keletre egy ajtó amin átjöttél.";
                             break;
                         default:
                             foreach (var thing in BathroomThings)
@@ -89,11 +89,11 @@ namespace I4PEscpaeGame
                             interactions.Response = "Északra nem tudsz menni, arra nincs kijárat.";
                             break;
                         case "dél":
-                            interactions.Response = "A nappaliban vagy";
-                            interactions.Room = "nappali";
+                            interactions.Response = "Eöltted van egy Kád.";
                             break;
                         case "kelet":
-                            interactions.Response = "Eöltted van egy Kád.";
+                            interactions.Response = "A nappaliban vagy";
+                            interactions.Room = "nappali";
                             break;
                         case "nyugat":
                             interactions.Response = "Nyugatnak nem tudsz menni, arra nincs kijárat.";
@@ -161,7 +161,7 @@ namespace I4PEscpaeGame
                     }
                     if (interactions.Response == "")
                     {
-                        interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem tudom felvenni";
+                        interactions.Response = "A(z) " + interactions.Item1 + " tárgyat nem tudom felvenni";
                     }
                     break;
 
@@ -181,7 +181,7 @@ namespace I4PEscpaeGame
                     }
                     if (interactions.Response == "")
                     {
-                        interactions.Response = "a(z) " + interactions.Item1 + " tárgya nincs a birtokodban";
+                        interactions.Response = "A(z) " + interactions.Item1 + " tárgya nincs a birtokodban.";
                     }
                     break;
 
@@ -199,7 +199,7 @@ namespace I4PEscpaeGame
                     }
                     if (interactions.Response == "")
                     {
-                        interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem tudom elhúzni.";
+                        interactions.Response = "A(z) " + interactions.Item1 + " tárgyat nem tudom elhúzni.";
                     }
                     break;
 

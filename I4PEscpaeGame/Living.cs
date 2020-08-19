@@ -70,7 +70,7 @@ namespace I4PEscpaeGame
                             {
                                 foreach (var func in thing.Functions)
                                 {
-                                    if (interactions.Command == func.Key)
+                                    if (interactions.Command == func.Key && thing.Name=="ablak")
                                     {
                                         foreach (var Container in LivingRoomThings)
                                         {
@@ -84,7 +84,7 @@ namespace I4PEscpaeGame
                             }
                             if (interactions.Response == "")
                             {
-                                return interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem látom";
+                                return interactions.Response = "A(z) " + interactions.Item1 + " tárgyat nem látom.";
                             }
                             break;
 
@@ -123,7 +123,7 @@ namespace I4PEscpaeGame
                             }
                             if (interactions.Response == "")
                             {
-                                return interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem látom";
+                                return interactions.Response = "A(z) " + interactions.Item1 + " tárgyat nem látom";
                             }
                             break;
                     }
@@ -205,11 +205,11 @@ namespace I4PEscpaeGame
                             {
                                 if (interactions.Item1 != "" && interactions.Item2 != "")
                                 {
-                                    return interactions.Response = "a(z) " + interactions.Item1 + " tárgyat a(z) " + interactions.Item2 + " tárggyal nem tudom kinyitni.";
+                                    return interactions.Response = "A(z) " + interactions.Item1 + " tárgyat a(z) " + interactions.Item2 + " tárggyal nem tudom kinyitni.";
                                 }
                                 else
                                 {
-                                    return interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem tudom kinyitni";
+                                    return interactions.Response = "A(z) " + interactions.Item1 + " tárgyat nem tudom kinyitni.";
                                 }
                             }
                             else
@@ -235,7 +235,7 @@ namespace I4PEscpaeGame
                     }
                     if (interactions.Response == "")
                     {
-                        return interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem tudom felvenni";
+                        return interactions.Response = "A(z) " + interactions.Item1 + " tárgyat nem tudom felvenni.";
                     }
                     break;
 
@@ -255,7 +255,7 @@ namespace I4PEscpaeGame
                     }
                     if (interactions.Response == "")
                     {
-                        return interactions.Response = "a(z) " + interactions.Item1 + " tárgya nincs a birtokodban";
+                        return interactions.Response = "A(z) " + interactions.Item1 + " tárgya nincs a birtokodban.";
                     }
                     break;
 
@@ -275,7 +275,7 @@ namespace I4PEscpaeGame
                     }
                     if (interactions.Response == "")
                     {
-                        return interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem tudom elhúzni.";
+                        return interactions.Response = "A(z) " + interactions.Item1 + " tárgyat nem tudom elhúzni.";
                     }
                     break;
 
@@ -319,7 +319,7 @@ namespace I4PEscpaeGame
                     }
                     else if (interactions.Response == "")
                     {
-                        return interactions.Response = "a(z) " + interactions.Item1 + " tárgyat nem tudom betörni.";
+                        return interactions.Response = "A(z) " + interactions.Item1 + " tárgyat nem tudom betörni.";
                     }
                     break;
 
